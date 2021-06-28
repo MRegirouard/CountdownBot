@@ -22,6 +22,52 @@ const pingCmd = new cmd.command('ping', [], 'Test bot connection.', [], async fu
     message.channel.send("Pong! Latency is " + latency + "ms. API Latency is " + apiLatency +"ms.");
 }, null)
 
+const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Create a new countdown.', ['End Date', 'Name'], function(args, message)
+{
+    const endDate = new Date(args[0])
+
+    if (isNaN(endDate))
+    {
+        message.channel.send('Invalid date entered. Please be as verbose as possible. Do not use \"st\", \"nd\", etc. suffixes.')
+        return
+    }
+
+    const now = Date.now()
+    const difference = endDate - now
+    const intervals = computeIntervals(difference)
+
+    var messageStr = 'Countdown to '
+
+    if (args[1] === ' ')
+        messageStr += endDate.toLocaleString()
+    else
+        messageStr += args[1] + ' (' + endDate.toLocaleString() + ')'
+
+    messageStr += ':\n'
+    messageStr += intervals.days + ' Days, '
+    messageStr += intervals.hours + ' Hours, '
+    messageStr += intervals.minutes + ' Minutes, '
+    messageStr += intervals.seconds + ' Seconds.'
+
+    message.channel.send(messageStr).then(result => 
+    {
+        const countdownObj = {'Channel Id': message.channel.id,'Message Id': result.id, 'End Date': endDate, 'Title': args[1]}
+        countdowns.push(countdownObj)
+        console.log(countdowns)
+    })
+
+}, null)
+
+function computeIntervals(msDifference)
+{
+    const days = Math.floor(msDifference / (1000 * 60 * 60 * 24))
+    const hours = Math.floor((msDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((msDifference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((msDifference % (1000 * 60)) / 1000);
+
+    return {days: days, hours: hours, minutes: minutes, seconds: seconds}
+}
+
 configReader.readOptions(configFile, configOptions, false).then((result) =>
 {
     console.info('Successfully read config information.')
@@ -53,5 +99,27 @@ dClient.on('message', message =>
 
 function updateClocks()
 {
+    for (const countdown of countdowns)
+    {
+        const now = Date.now()
+        const difference = countdown['End Date'] - now
+        const intervals = computeIntervals(difference)
+
+        var messageStr = 'Countdown to '
+
+        if (countdown['Title'] === ' ')
+            messageStr += countdown['End Date'].toLocaleString()
+        else
+            messageStr += countdown['Title'] + ' (' + countdown['End Date'].toLocaleString() + ')'
+
+        messageStr += ':\n'
+        messageStr += intervals.days + ' Days, '
+        messageStr += intervals.hours + ' Hours, '
+        messageStr += intervals.minutes + ' Minutes, '
+        messageStr += intervals.seconds + ' Seconds.'
     
+        const channel = dClient.channels.cache.get(countdown['Channel Id'])
+        const message = channel.messages.cache.get(countdown['Message Id'])
+        message.edit(messageStr)
+    }
 }
