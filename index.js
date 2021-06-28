@@ -70,10 +70,17 @@ const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Cr
 
 function computeIntervals(msDifference)
 {
-    const days = Math.floor(msDifference / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((msDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((msDifference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((msDifference % (1000 * 60)) / 1000);
+    var days = Math.floor(msDifference / (1000 * 60 * 60 * 24))
+    var hours = Math.floor((msDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((msDifference % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((msDifference % (1000 * 60)) / 1000);
+
+    if (msDifference < 0)
+    {
+        days += 1
+        hours += 1
+        minutes += 1
+    }
 
     return {days: days, hours: hours, minutes: minutes, seconds: seconds}
 }
