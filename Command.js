@@ -83,8 +83,74 @@ class command
 
     static getArgs(userInput)
     {
-        const args = userInput.toLowerCase().split(' ')
+        var args = ['']
+
+        var inQuotes = false
+        var isEscaped = false
+
+        for (const c of userInput.toLowerCase())
+        {
+            if (c === '\"')
+            {
+                if (isEscaped)
+                {
+                    args[args.length - 1] += '\"'
+                    isEscaped = false
+                }
+                else
+                {
+                    if (inQuotes)
+                        if (args[args.length - 1] !== '')
+                            args.push('')
+
+                    inQuotes = !inQuotes
+                }
+
+            }
+            else if (c === '\\')
+            {
+                if (isEscaped)
+                {
+                    args[args.length - 1] += '\\'
+                    isEscaped = false
+                }
+                else
+                    isEscaped = true
+            }
+            else if (c === argSeparator)
+            {
+                if (isEscaped)
+                {
+                    args[args.length - 1] += c
+                    isEscaped = false
+                }
+                else
+                {
+                    if (inQuotes)
+                    {
+                        args[args.length - 1] += c
+                    }
+                    else
+                    {
+                        if (args[args.length - 1] !== '')
+                            args.push('')
+                    }
+                } 
+            }
+            else
+            {
+                args[args.length - 1] += c
+                isEscaped = false
+            }
+
+            isEscaped = c === '\\'
+        }
+
         args.shift()
+
+        if (args[args.length - 1] === '')
+            args.pop()
+
         return args
     }
 
