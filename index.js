@@ -29,4 +29,11 @@ configReader.readOptions(configFile, configOptions, false).then((result) =>
 dClient.on('ready', () =>
 {
     console.info('Bot is ready.')
+
+    dClient.setInterval(updateClocks, 10000)
 })
+
+function updateClocks()
+{
+    
+}
