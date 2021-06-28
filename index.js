@@ -6,6 +6,7 @@ const dClient = new discord.Client()
 const configFile = './CountDownBot.conf' // Path to config file
 const configOptions = { // Options to retrieve from config file
     'Discord API Token':'',
+    'Countdowns':[]
 }
 
 configReader.readOptions(configFile, configOptions, false).then((result) =>
