@@ -9,7 +9,8 @@ const configOptions = { // Options to retrieve from config file
     'Discord API Token':'',
     'Countdowns':[]
 }
-var countdowns
+
+var config
 
 cmd.command.beforeHelp = 'Hello! I\'m a countdown bot developed by <@592832907358502961>! Here are my commands:\n'
 cmd.command.afterHelp = 'View and contribute to my source code here: https://github.com/MRegirouard/CountdownBot'
@@ -52,8 +53,17 @@ const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Cr
     message.channel.send(messageStr).then(result => 
     {
         const countdownObj = {'Channel Id': message.channel.id,'Message Id': result.id, 'End Date': endDate, 'Title': args[1]}
-        countdowns.push(countdownObj)
-        console.log(countdowns)
+        config['Countdowns'].push(countdownObj)
+
+        configReader.writeOptions(configFile, config).then((result) =>
+        {
+            console.info('Successfully wrote new countdown to config file.')
+        })
+        .catch((err) => 
+        {
+            console.error(err)
+            process.exit(1)
+        })
     })
 
 }, null)
@@ -72,11 +82,11 @@ configReader.readOptions(configFile, configOptions, false).then((result) =>
 {
     console.info('Successfully read config information.')
 
-    countdowns = result['Countdowns']
+    config = result
 
-    console.debug('Read', countdowns.length, 'countdowns.')
+    console.debug('Read', config['Countdowns'].length, 'countdowns.')
 
-    dClient.login(result['Discord API Token'])
+    dClient.login(config['Discord API Token'])
 })
 .catch((err) =>
 {
@@ -99,18 +109,19 @@ dClient.on('message', message =>
 
 function updateClocks()
 {
-    for (const countdown of countdowns)
+    for (const countdown of config['Countdowns'])
     {
         const now = Date.now()
-        const difference = countdown['End Date'] - now
+        const endDate = new Date(countdown['End Date'])
+        const difference = endDate - now
         const intervals = computeIntervals(difference)
 
         var messageStr = 'Countdown to '
 
         if (countdown['Title'] === ' ')
-            messageStr += countdown['End Date'].toLocaleString()
+            messageStr += endDate.toLocaleString()
         else
-            messageStr += countdown['Title'] + ' (' + countdown['End Date'].toLocaleString() + ')'
+            messageStr += countdown['Title'] + ' (' + endDate.toLocaleString() + ')'
 
         messageStr += ':\n'
         messageStr += intervals.days + ' Days, '
@@ -119,7 +130,9 @@ function updateClocks()
         messageStr += intervals.seconds + ' Seconds.'
     
         const channel = dClient.channels.cache.get(countdown['Channel Id'])
-        const message = channel.messages.cache.get(countdown['Message Id'])
+        const message = channel.messages.fetch(countdown['Message Id']).then((message) =>
+        {
         message.edit(messageStr)
+        })
     }
 }
