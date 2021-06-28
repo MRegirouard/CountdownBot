@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/MRegirouard/CountdownBot/issues"
   },
-  "homepage": "https://github.com/MRegirouard/CountdownBot#readme"
+  "homepage": "https://github.com/MRegirouard/CountdownBot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
 }
