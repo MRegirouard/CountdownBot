@@ -13,7 +13,7 @@ const configOptions = { // Options to retrieve from config file
 var config
 
 cmd.command.beforeHelp = 'Hello! I\'m a countdown bot developed by <@592832907358502961>! Here are my commands:\n'
-cmd.command.afterHelp = 'View and contribute to my source code here: https://github.com/MRegirouard/CountdownBot'
+cmd.command.afterHelp = 'React to a countdown with \'🛑\' to stop it. View and contribute to my source code here: https://github.com/MRegirouard/CountdownBot'
 
 const pingCmd = new cmd.command('ping', [], 'Test bot connection.', [], async function(args, message)
 {
@@ -113,6 +113,41 @@ dClient.on('message', message =>
   if (message.author.id !== dClient.user.id)
     cmd.command.checkAll(message)
 })
+
+dClient.on('messageReactionAdd', (reaction, user) =>
+{
+    if (reaction.message.author.id === dClient.user.id && user.id !== dClient.user.id)
+    {
+        if (reaction._emoji.name === '🛑')
+        {
+            for (const i in config['Countdowns'])
+            {
+                const countdown = config['Countdowns'][i]
+
+                if (countdown['Message Id'] === reaction.message.id)
+                {
+                    const channel = dClient.channels.cache.get(countdown['Channel Id'])
+                    const message = channel.messages.fetch(countdown['Message Id']).then((message) =>
+                    {
+                        message.delete()
+                    })
+
+                    config['Countdowns'].splice(i, 1)
+
+                    configReader.writeOptions(configFile, config).then((result) =>
+                    {
+                        console.info('Successfully wrote new countdown to config file.')
+                    })
+                    .catch((err) => 
+                    {
+                        console.error(err)
+                        process.exit(1)
+                    })
+                }
+            }
+        }
+    }
+});
 
 function updateClocks()
 {
