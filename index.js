@@ -50,9 +50,11 @@ const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Cr
     messageStr += intervals.minutes + ' Minutes, '
     messageStr += intervals.seconds + ' Seconds.'
 
-    message.channel.send(messageStr).then(result => 
+    message.channel.send(messageStr).then(sentMessage => 
     {
-        const countdownObj = {'Channel Id': message.channel.id,'Message Id': result.id, 'End Date': endDate, 'Title': args[1]}
+        sentMessage.react('🛑')
+
+        const countdownObj = {'Channel Id': message.channel.id,'Message Id': sentMessage.id, 'End Date': endDate, 'Title': args[1]}
         config['Countdowns'].push(countdownObj)
 
         configReader.writeOptions(configFile, config).then((result) =>
