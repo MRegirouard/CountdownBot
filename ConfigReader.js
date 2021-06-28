@@ -1,6 +1,7 @@
 const fs = require('fs')
 
 exports.readOptions = readOptions
+exports.writeOptions = writeOptions
 
 /**
  * Read and parse specified options from the config file.
@@ -68,6 +69,32 @@ function readOptions(filePath = './Config.json', options, acceptEmpty = true, cr
                     })
                 })
             }
+        })
+    })
+}
+
+/**
+ * Write specified options from the config file.
+ * @param {string} [filePath = './Config.json'] Path of file to read config information from.
+ * @param {{}} [options] Options to write to config file JSON data.
+ * @returns {Promise<Object>} A promise that contains an object with the parsed config options from the file when fulfilled.
+ */
+function writeOptions(filePath = './Config.json', options, create = true)
+{
+    return new Promise((resolve, reject) => 
+    {
+        const writeData = JSON.stringify(options)
+
+        fs.access(filePath, fs.constants.W_OK, (err) => 
+        {
+            if (err) reject('Could not write to configuration file ' + filePath + '. Ensure that it can be written to.')
+
+            fs.writeFile(filePath, writeData, (err, data) => 
+            {
+                if (err) reject('Error writing to configuration file ' + filePath + '.')
+
+                resolve('Successfully wrote config options.')
+            })
         })
     })
 }
