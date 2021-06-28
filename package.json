@@ -1,0 +1,26 @@
+{
+  "name": "countdownbot",
+  "version": "1.0.0",
+  "description": "A Node.js Discord countdown bot that repeatedly updates a message to show the remaining time.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MRegirouard/CountdownBot.git"
+  },
+  "keywords": [
+    "discord",
+    "countdown",
+    "bot",
+    "timer",
+    "clock"
+  ],
+  "author": "MRegirouard",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/MRegirouard/CountdownBot/issues"
+  },
+  "homepage": "https://github.com/MRegirouard/CountdownBot#readme"
+}
