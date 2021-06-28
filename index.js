@@ -20,3 +20,8 @@ configReader.readOptions(configFile, configOptions, false).then((result) =>
     console.error(err)
     process.exit(1)
 })
+
+dClient.on('ready', () =>
+{
+    console.info('Bot is ready.')
+})
