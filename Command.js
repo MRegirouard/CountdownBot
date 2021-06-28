@@ -88,7 +88,7 @@ class command
         var inQuotes = false
         var isEscaped = false
 
-        for (const c of userInput.toLowerCase())
+        for (const c of userInput)
         {
             if (c === '\"')
             {
