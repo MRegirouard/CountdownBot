@@ -1,6 +1,6 @@
 const discord = require('discord.js')
-const configReader = require('./ConfigReader.js')
 const cmd = require('./Command.js')
+const confReader = require('@eta357/config-reader')
 
 const dClient = new discord.Client()
 
@@ -57,7 +57,7 @@ const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Cr
         const countdownObj = {'Channel Id': message.channel.id,'Message Id': sentMessage.id, 'End Date': endDate, 'Title': args[1]}
         config['Countdowns'].push(countdownObj)
 
-        configReader.writeOptions(configFile, config).then((result) =>
+        confReader.writeOptions(configFile, config).then((result) =>
         {
             console.info('Successfully wrote new countdown to config file.')
         })
@@ -87,7 +87,7 @@ function computeIntervals(msDifference)
     return {days: days, hours: hours, minutes: minutes, seconds: seconds}
 }
 
-configReader.readOptions(configFile, configOptions, false).then((result) =>
+confReader.readOptions(configFile, configOptions, false).then((result) =>
 {
     console.info('Successfully read config information.')
 
@@ -136,7 +136,7 @@ dClient.on('messageReactionAdd', (reaction, user) =>
 
                     config['Countdowns'].splice(i, 1)
 
-                    configReader.writeOptions(configFile, config).then((result) =>
+                    confReader.writeOptions(configFile, config).then((result) =>
                     {
                         console.info('Successfully wrote new countdown to config file.')
                     })

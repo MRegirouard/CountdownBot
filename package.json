@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/MRegirouard/CountdownBot#readme",
   "dependencies": {
+    "@eta357/config-reader": "^1.0.0",
     "discord.js": "^12.5.3"
   }
 }
