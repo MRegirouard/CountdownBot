@@ -68,7 +68,10 @@ const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Cr
         })
     })
 
-}, null)
+}, (error, message) =>
+{
+    message.channel.send(error)
+})
 
 function computeIntervals(msDifference)
 {
