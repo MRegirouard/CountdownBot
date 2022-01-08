@@ -7,7 +7,8 @@ const dClient = new discord.Client()
 const configFile = './CountDownBot.conf' // Path to config file
 const configOptions = { // Options to retrieve from config file
     'Discord API Token':'',
-    'Countdowns':[]
+    'Countdowns':[],
+    'Update Interval':"10000"
 }
 
 var config
@@ -110,7 +111,7 @@ dClient.on('ready', () =>
 {
     console.info('Bot is ready.')
 
-    dClient.setInterval(updateClocks, 10000)
+    dClient.setInterval(updateClocks, config['Update Interval'])
 })
 
 dClient.on('message', message =>
