@@ -51,7 +51,7 @@ const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Cr
     messageStr += intervals.minutes + ' Minutes, '
     messageStr += intervals.seconds + ' Seconds.'
 
-    message.channel.send(messageStr).then(sentMessage => 
+    message.channel.send(messageStr).then(sentMessage =>
     {
         sentMessage.react('🛑')
 
@@ -62,7 +62,7 @@ const countdownCmd = new cmd.command('countdown', ['count', 'timer', 'new'], 'Cr
         {
             console.info('Successfully wrote new countdown to config file.')
         })
-        .catch((err) => 
+        .catch((err) =>
         {
             console.error(err)
             process.exit(1)
@@ -144,7 +144,7 @@ dClient.on('messageReactionAdd', (reaction, user) =>
                     {
                         console.info('Successfully wrote new countdown to config file.')
                     })
-                    .catch((err) => 
+                    .catch((err) =>
                     {
                         console.error(err)
                         process.exit(1)
@@ -176,7 +176,7 @@ function updateClocks()
         messageStr += intervals.hours + ' Hours, '
         messageStr += intervals.minutes + ' Minutes, '
         messageStr += intervals.seconds + ' Seconds.'
-    
+
         const channel = dClient.channels.cache.get(countdown['Channel Id'])
         const message = channel.messages.fetch(countdown['Message Id']).then((message) =>
         {
